@@ -6,5 +6,5 @@ def get_db_connection():
         host="localhost",
         user="root",
         password="Sairam@123",
-        database="gpt"
+        database="venue_booking"
     )

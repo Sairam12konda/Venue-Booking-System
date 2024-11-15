@@ -40,11 +40,14 @@ def login():
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password_hash))
+
+    # Select only specific fields to avoid sending sensitive data
+    cursor.execute("SELECT *FROM users WHERE email = %s AND password = %s", (email, password_hash))
     user = cursor.fetchone()
     cursor.close()
     conn.close()
 
     if user:
-        return jsonify({'message': 'Login successful!', 'user_id': user[0]})
+        return jsonify({'message': 'Login successful!', 'user': user})
+    
     return jsonify({'message': 'Invalid credentials'}), 401

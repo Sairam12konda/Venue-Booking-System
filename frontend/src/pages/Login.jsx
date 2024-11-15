@@ -19,20 +19,31 @@ const Login = ({ setIsLoggedIn }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login({ email, password });
-
-            // Store login details in localStorage
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('email', email);
-            localStorage.setItem('password', password);
-
-            // Update the login state
-            setIsLoggedIn(true);
-            alert('Login successful');
+            // Send login data and get the response
+            const response = await login({ email, password });
+            console.log(response)
+            const data = await response['user'];
+            console.log(data[0])
+            // Check if login was successful
+            if (response['message'] === 'Login successful!' && data) {
+                const user_id = data[0];
+    
+                // Store login details and user_id in localStorage
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('email', email);
+                localStorage.setItem('user_id', user_id);  // Store user_id instead of password for security
+                localStorage.setItem('password', password);
+                // Update the login state
+                setIsLoggedIn(true);
+                alert('Login successful');
+            } else {
+                throw new Error(data.message || 'Login failed');
+            }
         } catch (error) {
-            alert('Login failed');
+            alert(error.message);
         }
     };
+    
 
     return (
         <div className="flex justify-center items-center h-screen">

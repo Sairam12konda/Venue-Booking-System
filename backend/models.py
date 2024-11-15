@@ -27,7 +27,7 @@ class Venue(db.Model):
     start_time = db.Column(db.DateTime, nullable=True)
     end_time = db.Column(db.DateTime, nullable=True)
     availability_status = db.Column(db.Boolean, default=True)
-    cost_per_hour = db.Column(db.Integer, nullable=False)
+    cost = db.Column(db.Integer, nullable=False)
     
     # Define relationship with Booking (one-to-many)
     bookings = db.relationship('Booking', backref='venue', lazy=True)
@@ -49,6 +49,7 @@ class Payment(db.Model):
     
     payment_id = db.Column(db.Integer, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     payment_status = db.Column(db.Integer, nullable=True)
     payment_method = db.Column(db.String(45), nullable=True)

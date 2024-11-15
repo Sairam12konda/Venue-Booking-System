@@ -4,7 +4,6 @@ import api from './api';
 export const getVenues = async () => {
     try {
         const response = await api.get('/venues');
-        
         return response.data;
     } catch (error) {
         console.error('Error fetching venues:', error);
@@ -22,13 +21,4 @@ export const addVenue = async (venueData) => {
     }
 };
 
-// Add the getUserBookings function
-export const getUserBookings = async (userId) => {
-    try {
-        const response = await api.get(`/bookings?userId=${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching user bookings:', error);
-        throw error;
-    }
-};
+

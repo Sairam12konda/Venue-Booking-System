@@ -11,7 +11,7 @@ const VenueCard = ({ venue, onBook }) => {
             <p className="text-gray-600">Start_time: {venue.start_time}</p>
             <p className="text-gray-600">End_time: {venue.end_time}</p>
             <p className="text-gray-600">Available: {venue.availability_status ? "Yes" : "No"}</p>
-            <p className="text-gray-800 font-bold">Cost per Hour: ${venue.cost_per_hour}</p>
+            <p className="text-gray-800 font-bold">Cost: ${venue.cost}</p>
             <button
                 className={`mt-4 px-4 py-2 rounded transition ${
                     venue.availability_status ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-400 text-gray-200 cursor-not-allowed'

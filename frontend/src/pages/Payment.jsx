@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Import useLocation
-import { processPayment } from '../services/paymentService';
+import { useLocation, useNavigate } from 'react-router-dom'; // Import necessary hooks
+import { processPayment } from '../services/paymentService'; // For processing payment
+import { createBooking } from '../services/bookingService'; // For creating booking
 
 const Payment = () => {
-    const { state } = useLocation(); // Get the state passed from Venues
+    const { state } = useLocation(); // Get the state passed from the Venues page
     const [paymentMethod, setPaymentMethod] = useState('');
-    
-    // Destructure the venueId and amount from state
-    const { venueId, amount } = state || {};
+    const navigate = useNavigate();
+
+    // Destructure venueId, userId, and amount from the state
+    const { venueId, userId, amount } = state || {};
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            
-            await processPayment({ venueId, paymentMethod });
-            alert('Payment successful');
+            // Process payment and get the payment_id
+            const response = await processPayment({ venueId, userId, paymentMethod });
+            const payment_id = response.payment_id;
+            console.log('Payment ID:', payment_id);
+            console.log(userId,venueId,payment_id)
+            // Now, create a booking
+            const bookingResponse = await createBooking({
+                user_id: userId,
+                venue_id: venueId,
+                payment_id: payment_id,
+            });
+
+            console.log('Booking created:', bookingResponse);
+
+            // After booking is created, navigate to the Bookings page
+            navigate('/Bookings', { state: { userId } });
+            alert('Payment and booking successful');
         } catch (error) {
-            alert('Payment failed' + error);
+            alert('Payment or booking failed: ' + error.message);
         }
     };
 
@@ -41,6 +57,7 @@ const Payment = () => {
                 >
                     <option value="credit_card">Credit Card</option>
                     <option value="paypal">PayPal</option>
+                    <option value="upi">UPI</option>
                 </select>
                 <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded-lg">Pay Now</button>
             </form>

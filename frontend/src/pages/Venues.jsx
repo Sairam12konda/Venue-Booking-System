@@ -12,7 +12,7 @@ const Venues = () => {
             try {
                 // Use getVenues directly and expect the correct format
                 const data = await getVenues();  // Assuming getVenues() already returns response.data
-        
+                console.log(data)
                 // Check if data is an array and update state
                 if (Array.isArray(data)) {
                     setVenues(data);
@@ -30,7 +30,7 @@ const Venues = () => {
     const handleBookVenue = (venue) => {
         alert(`Booking initiated for ${venue.venue_name}`);
         // Use navigate here to programmatically redirect
-        navigate('/payment', { state: { venueId: venue.venue_id, amount: venue.cost_per_hour } });
+        navigate('/payment', { state: { venueId: venue.venue_id,userId: localStorage.getItem('user_id') ,amount: venue.cost} });
     };
     return (
         <div className="p-6">
