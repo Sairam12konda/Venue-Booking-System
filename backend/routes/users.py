@@ -18,7 +18,8 @@ def register():
     cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
     existing_user = cursor.fetchone()
     if existing_user:
-        return jsonify({"error": "Email already exists."}), 409
+    
+        return jsonify({"error": "Email already exists."}), 201
     
     # Register the user with is_admin set to False
     cursor.execute('''

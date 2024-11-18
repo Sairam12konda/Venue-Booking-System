@@ -17,25 +17,32 @@ def get_venues():
 @venues_bp.route('/add', methods=['POST'])
 def add_venue():
     data = request.get_json()
-    venue_name = data['venue_name']
-    capacity = data['capacity']
-    location = data['location']
-    booking_date = data['booking_date']  # Expected to be in 'YYYY-MM-DD' format
-    start_time = data['start_time']      # Expected to be in 'HH:MM:SS' format
-    end_time = data['end_time']          # Expected to be in 'HH:MM:SS' format
-    cost_per_hour = data['cost_per_hour']
+    venue_name = data.get('venue_name')
+    capacity = data.get('capacity')
+    location = data.get('location')
+    booking_date = data.get('booking_date')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
+    cost = data.get('cost')
+
+    if not all([venue_name, capacity, location, booking_date, start_time, end_time, cost]):
+        return jsonify({'error': 'Missing required fields'}), 400
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute('''
-        INSERT INTO venues (venue_name, capacity, location, booking_date, start_time, end_time, cost_per_hour)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    ''', (venue_name, capacity, location, booking_date, start_time, end_time, cost_per_hour))
+    try:
+        cursor.execute('''
+            INSERT INTO venues (venue_name, capacity, location, booking_date, start_time, end_time, cost)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ''', (venue_name, capacity, location, booking_date, start_time, end_time, cost))
+        conn.commit()
+        new_id = cursor.lastrowid
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-    cursor.close()
-    conn.commit()
-    cursor.close()
-    conn.close()
-    
-    return jsonify({'message': 'Venue added successfully!'})
+    return jsonify({'message': 'Venue added successfully!', 'venue_id': new_id})

@@ -27,12 +27,11 @@ const Login = ({ setIsLoggedIn }) => {
             // Check if login was successful
             if (response['message'] === 'Login successful!' && data) {
                 const user_id = data[0];
-    
-                // Store login details and user_id in localStorage
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('email', email);
                 localStorage.setItem('user_id', user_id);  // Store user_id instead of password for security
                 localStorage.setItem('password', password);
+                localStorage.setItem('isadmin', data[4]);
                 // Update the login state
                 setIsLoggedIn(true);
                 alert('Login successful');

@@ -10,13 +10,20 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Send registration details and get the response
+            const response = await register(userDetails);
             
-            await register(userDetails);
-            alert('Registration successful');
+            // Check if the server response contains an error
+            if (response.error === "Email already exists.") {
+                alert("Duplicate email detected: You can`t add that email.");
+            } else {
+                alert('Registration successful');
+            }
         } catch (error) {
             alert('Registration failed');
         }
     };
+    
 
     return (
         <div className="flex justify-center items-center h-screen">
